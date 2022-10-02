@@ -1,0 +1,83 @@
+.h1text {
+  color: green;
+  text-align: center;
+  animation-name: h1text;
+  animation-iteration-count: 1;
+  animation-duration: 1.5s;
+  animation-direction: alternate;
+  animation-delay: 0s;
+  animation-timing-function: ease;
+}
+
+@keyframes h1text {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.updiv {
+  height: 50px;
+  width: 800px;
+  margin: 0 auto;
+  border-bottom: solid 2px red;
+  animation-name: updiv;
+  animation-iteration-count: 1;
+  animation-duration: 1.5s;
+  animation-direction: alternate;
+  animation-delay: 0s;
+  animation-timing-function: ease;
+}
+
+@keyframes updiv {
+  0% {
+    transform: translateX(-1000px);
+  } 100% {
+    transform: translateX(center);
+  }
+}
+
+.downdiv {
+  height: 50px;
+  width: 800px;
+  margin: 0 auto;
+  border-top: solid 2px blue;
+  animation-name: downdiv;
+  animation-iteration-count: 1;
+  animation-duration: 1.5s;
+  animation-direction: alternate;
+  animation-delay: 0s;
+  animation-timing-function: ease;
+}
+
+@keyframes downdiv {
+  0% {
+    transform: translateX(1000px);
+  } 100% {
+    transform: translateX(center);
+  }
+}
+
+.ptext {
+  font-size: 80px;
+  color: orange;
+  text-align: center;
+  animation-name: ptext;
+  animation-iteration-count: 1;
+  animation-duration: 1s;
+  animation-direction: alternate;
+  animation-delay: 1.2s;
+  animation-timing-function: ease;
+  animation-fill-mode: backwards;
+}
+
+@keyframes ptext {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
