@@ -1,0 +1,134 @@
+.header {
+  position: relative;
+  height: 750px;
+}
+
+.backimage {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 1500px 150px;
+  border-bottom-left-radius: 1500px 150px;
+  animation-name: backimage;
+  animation-iteration-count: 1;
+  animation-duration: 2.5s;
+  animation-direction: alternate;
+  animation-delay: 1s;
+  animation-timing-function: ease;
+  animation-fill-mode: both;
+}
+
+@keyframes backimage {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.headerBox {
+  display: flex;
+  text-align: center;
+  justify-content: space-between;
+}
+
+.cakeBox {
+  position: relative;
+  display: flex;
+  text-align: center;
+  justify-content: space-between;
+  padding: 50px 0 0 100px;
+}
+
+.cake {
+  position: relative;
+  animation-name: cake;
+  animation-iteration-count: 1;
+  animation-duration: 2.5s;
+  animation-direction: alternate;
+  animation-delay: 1s;
+  animation-timing-function: ease;
+  animation-fill-mode: both;
+}
+
+@keyframes cake {
+  0% {
+    transform: translateY(15rem) translateX(35rem);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.caketext {
+  position: relative;
+}
+
+.caketexttop {
+  color: white;
+  margin-left: 40px;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.caketextbottom {
+  color: white;
+  margin-left: -70px;
+  font-size: 20px;
+}
+
+.listBox {
+  position: relative;
+  padding: 55px 200px 0 0;
+}
+
+.listBoxBorder {
+
+}
+
+.listBoxBorder p {
+  color: white;
+  font-size: 20px;
+  padding: 0 25px 0 25px;
+  display: inline-block;
+}
+
+.listBoxBorder p span:hover {
+  border-bottom: 3px solid #2DFF57;
+  cursor : pointer;
+}
+
+.downcorsor {
+  position: relative;
+  margin: 500px 0 500px 700px;
+}
+
+.heightadjustment {
+  height: 300px;
+}
+
+.introduceBox {
+  position: relative;
+}
+
+.introduceBox div {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  width: 500px;
+  height: 30rem;
+}
+
+.introduceBox div h1 {
+  text-align: center;
+  font-size: 50px;
+  margin-bottom: 50px;
+}
+
+.introduceBox div p {
+  font-size: 22px;
+  margin-bottom: -25px;
+}
