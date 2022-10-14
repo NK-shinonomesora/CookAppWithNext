@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500&family=Roboto+Mono:wght@100&family=Roboto:ital,wght@1,300&display=swap');
+
+.fullpage {
+  margin-top: -20px;
+  width: 100vw;
+  height: 1500px;
+  background: #111;
+}
+
+.header {
+  height: 70px;
+  background-color: #333;
+}
+
+.header h2 {
+  font-family: 'Roboto Mono', monospace;
+  color: aquamarine;
+  padding: 20px 0 0 0;
+  text-align: center;
+}
+
+.flex {
+  padding: 2.5% 0;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  min-width: 8%;
+  text-align: center;
+  justify-content: space-between;
+}
+
+.wrap {
+  position: relative;
+  margin: 0px auto;
+}
+
+.wrap p {
+  color: white;
+  text-align: left;
+  margin-left: 10px;
+  font-size: 24px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.materialBox {
+  border: solid 1px gray;
+  border-radius: 5px;
+  width: 650px;
+}
+
+.description {
+  font-family: 'Roboto', sans-serif;
+  text-align: left;
+  font-size: 14px;
+  color: white;
+  margin-left: 50px;
+}
+
+.materialBox p {
+  font-size: 18px;
+  font-family: 'Noto Sans JP', sans-serif;
+  margin-left: 50px;
+}
+
+.materialInputBox {
+  position: relative;
+}
+
+.materialInput {
+  background-color: #333;
+  border: solid 1.5px gray;
+  border-radius: 3px;
+  height: 50px;
+  width: 550px;
+  margin: -5px 0 30px 0;
+  font-size: 20px;
+  color: white;
+}
+
+.plus {
+  position: absolute;
+  bottom: 48px;
+  right: 60px;
+}
+
+.plus:hover {
+  cursor : pointer;
+}
+
+.minus {
+  position: absolute;
+  bottom: 48px;
+  right: 60px;
+}
+
+.minus:hover {
+  cursor : pointer;
+}
+
+.toStepBox {
+  position: relative;
+  margin-top: 30px;
+  border: solid 3px green;
+  border-radius: 7%;
+  width: 130px;
+  height: 50px;
+  background-color: rgba(47, 255, 85, 0.818);
+}
+
+.toStepBox h4 {
+  position: absolute;
+  top: -41%;
+  right: 26%;
+  color: white;
+  font-size: 18px;
+  font-family: 'Noto Sans JP', sans-serif;
+}

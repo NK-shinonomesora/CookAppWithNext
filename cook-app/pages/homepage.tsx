@@ -1,5 +1,6 @@
 import type { NextPage } from 'next'
 import Image from 'next/image'
+import Link from 'next/link'
 import imagename from '../public/nature.jpeg'
 import styles from '../styles/homepage.module.css'
 import { FaBirthdayCake } from "react-icons/fa";
@@ -48,7 +49,9 @@ const HeaderList = () => {
     <div className={styles.listBox}>
       <div className={styles.listBoxBorder}>
         <p><span>Cooking</span></p>
-        <p><span>Register</span></p>
+        <Link href={'./register'}>
+          <p><span>Register</span></p>
+        </Link>
       </div>
     </div>
   )
