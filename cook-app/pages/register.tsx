@@ -5,10 +5,9 @@ import { AiOutlinePlus } from 'react-icons/ai'
 
 interface RegisterStateProp {
   limitOfMaterialNum: number
-  setWhichPage: (str: string) => void
   materialInputNum: number
   setMaterialInputNum: (n: number) => void
-  Increase: () => void
+  IncreaseMaterial: () => void
   materials: string[]
   setMaterials: (strary: string[]) => void
   limitOfStepNum: number
@@ -16,42 +15,58 @@ interface RegisterStateProp {
   setStepInputNum: (n: number) => void
   steps: string[]
   setSteps: (strary: string[]) => void
+  SetInputtedMaterial: (idx: number, value: string) => void
+  SetInputtedStep: (idx: number, value: string) => void
+  IncreaseStep: () => void
 }
 
 const RegisterContext = createContext<RegisterStateProp | null>(null);
 
 export const RegisterProp = () => {
   const limitOfMaterialNum = 10;
-  const [whichPage, setWhichPage] = useState<string>("material");
   const [materialInputNum, setMaterialInputNum] = useState<number>(1);
   const [materials, setMaterials] = useState<string[]>(Array(limitOfMaterialNum).fill(""));
   const limitOfStepNum = 5;
   const [stepInputNum, setStepInputNum] = useState<number>(1);
   const [steps, setSteps] = useState<string[]>(Array(limitOfStepNum).fill(""));
 
-  const Increase = () => {
+  const IncreaseMaterial = () => {
     setMaterialInputNum((materialInputNum) => materialInputNum + 1)
+  }
+
+  const SetInputtedMaterial = (idx: number, value: string) => {
+    materials[idx] = value;
+    setMaterials(materials);
+  }
+
+  const SetInputtedStep = (idx: number, value: string) => {
+    steps[idx] = value;
+    setSteps(steps);
+  }
+
+  const IncreaseStep = () => {
+    setStepInputNum((stepInputNum) => stepInputNum + 1);
   }
 
   return {
     limitOfMaterialNum: limitOfMaterialNum,
-    whichPage: whichPage,
-    setWhichPage: setWhichPage,
     materialInputNum: materialInputNum,
     setMaterialInputNum: setMaterialInputNum,
-    Increase: Increase,
+    IncreaseMaterial: IncreaseMaterial,
     materials: materials,
     setMaterials: setMaterials,
     limitOfStepNum: limitOfStepNum,
     stepInputNum: stepInputNum,
     setStepInputNum: setStepInputNum,
     steps: steps,
-    setSteps: setSteps
+    setSteps: setSteps,
+    SetInputtedMaterial: SetInputtedMaterial,
+    SetInputtedStep: SetInputtedStep,
+    IncreaseStep: IncreaseStep,
   }
 }
 
 const Register: NextPage = () => {
-
   const registerState = RegisterProp();
 
   return (
@@ -59,9 +74,8 @@ const Register: NextPage = () => {
     <RegisterContext.Provider value={registerState}>
       <div className={styles.fullpage}>
         <Header />
-        {
-          registerState.whichPage === "material" ? <Material /> : <Step />
-        }
+        <Material />
+        <Step />
       </div>
     </RegisterContext.Provider>
     </>
@@ -69,6 +83,7 @@ const Register: NextPage = () => {
 }
 
 export default Register
+
 
 const Header = () => {
   return (
@@ -80,44 +95,10 @@ const Header = () => {
   )
 }
 
-interface MaterialProp {
-  limitOfMaterialNum: number
-  materialInputNum: number
-  setMaterialInputNum: (n: number) => void
-  Increase: () => void
-  materials: string[]
-  setMaterials: (strary: string[]) => void
-  setWhichPage: (str: string) => void
-  SetInputtedMaterial: (idx: number, value: string) => void
-}
-
-export const MaterialProp = (): MaterialProp | null => {
+export const Material = () => {
   const registerContext = useContext(RegisterContext);
   if(!registerContext) return null;
-  const { limitOfMaterialNum, materialInputNum, setMaterialInputNum, Increase, materials, setMaterials, setWhichPage } = registerContext;
-
-  const SetInputtedMaterial = (idx: number, value: string) => {
-    materials[idx] = value;
-    setMaterials(materials);
-  }
-
-  return {
-    limitOfMaterialNum: limitOfMaterialNum,
-    materialInputNum: materialInputNum,
-    setMaterialInputNum: setMaterialInputNum,
-    Increase: Increase,
-    materials: materials,
-    setMaterials: setMaterials,
-    setWhichPage: setWhichPage,
-    SetInputtedMaterial: SetInputtedMaterial,
-  }
-
-}
-
-export const Material = () => {
-  const  materialProp = MaterialProp();
-  if(!materialProp) return null;
-  const { limitOfMaterialNum, materialInputNum, setWhichPage, SetInputtedMaterial, Increase } = materialProp;
+  const { limitOfMaterialNum, materialInputNum, SetInputtedMaterial, IncreaseMaterial } = registerContext;
 
   return (
     <div className={styles.flex}>
@@ -141,7 +122,7 @@ export const Material = () => {
                 &&
                 <AiOutlinePlus
                   data-testid="plusmark"
-                  onClick={() => Increase()}
+                  onClick={() => IncreaseMaterial()}
                   className={styles.plus}
                   color="white">
                 </AiOutlinePlus>
@@ -152,27 +133,14 @@ export const Material = () => {
           }
         </div>
       </div>
-      <div className={styles.wrap}>
-        <div className={styles.toStepBox}>
-          <h4 onClick={() => setWhichPage("aaa")}>To step</h4>
-        </div>
-      </div>
     </div>
   )
 }
 
-const Step = () => {
+export const Step = () => {
   const registerContext = useContext(RegisterContext);
-  const { limitOfStepNum, steps, setSteps, stepInputNum, setStepInputNum } = registerContext!;
-
-  const SetInputtedStep = (idx: number, value: string) => {
-    steps[idx] = value;
-    setSteps(steps);
-  }
-
-  const AddInput = () => {
-    setStepInputNum(stepInputNum + 1);
-  }
+  if(!registerContext) return null;
+  const { limitOfStepNum, stepInputNum, SetInputtedStep, IncreaseStep } = registerContext!;
 
   return (
     <div className={styles.flex}>
@@ -195,7 +163,7 @@ const Step = () => {
                 (stepInputNum === i + 1 && stepInputNum < limitOfStepNum)
                 &&
                 <AiOutlinePlus
-                  onClick={() => AddInput()}
+                  onClick={() => IncreaseStep()}
                   className={styles.plus}
                   color="white">
                 </AiOutlinePlus>
@@ -204,6 +172,11 @@ const Step = () => {
               </Fragment>
             )
           }
+        </div>
+      </div>
+      <div className={styles.wrap}>
+        <div className={styles.toStepBox}>
+          <h4 onClick={() => ""}>Register</h4>
         </div>
       </div>
     </div>
