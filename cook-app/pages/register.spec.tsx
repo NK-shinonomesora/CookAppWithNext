@@ -1,6 +1,24 @@
 import { render, screen, RenderResult, renderHook, act, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
-import { Material, RegisterProp, Step } from './register'
+import { CookName, Material, RegisterProp, Step } from './register'
+
+describe('CookName', () => {
+  let renderResult: RenderResult;
+
+  beforeAll(() => {
+    renderResult = render(<CookName />);
+  })
+
+  afterAll(() => {
+    renderResult.unmount();
+  })
+
+  test('When calling the SetInputtedCookName function, argument value is inputted to the cookName.', () => {
+    const { result } = renderHook(() => RegisterProp());
+    act(() => result.current.SetInputtedCookName("okonomiyaki"));
+    expect(result.current.cookName).toBe("okonomiyaki");
+  })
+})
 
 describe('Material', () => {
   let renderResult: RenderResult;

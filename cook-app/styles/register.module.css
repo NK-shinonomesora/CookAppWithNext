@@ -31,14 +31,14 @@
 
 .wrap {
   position: relative;
-  margin: 0px auto;
+  margin: -15px auto;
 }
 
 .wrap p {
   color: white;
   text-align: left;
   margin-left: 10px;
-  font-size: 24px;
+  font-size: 20px;
   font-family: 'Noto Sans JP', sans-serif;
 }
 
@@ -97,14 +97,27 @@
   cursor : pointer;
 }
 
+.errorMessage {
+  font-family: 'Roboto', sans-serif;
+  color: red;
+  font-size: 18px;
+  margin-bottom: 5px;
+  display: none;
+}
+
 .toStepBox {
   position: relative;
-  margin-top: 30px;
+  margin-top: 50px;
   border: solid 3px green;
   border-radius: 7%;
   width: 140px;
   height: 50px;
   background-color: rgba(47, 255, 85, 0.47);
+}
+
+.toStepBox:hover {
+  border-bottom: 1.5px solid #2DFF57;
+  cursor : pointer;
 }
 
 .toStepBox h4 {
@@ -114,4 +127,26 @@
   color: white;
   font-size: 18px;
   font-family: 'Noto Sans JP', sans-serif;
+}
+
+.afterRegister {
+  height: 600px;
+  text-align:center;
+  position:relative;
+}
+
+.afterRegisterInner {
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:60%;
+  height: 20%;
+  border:rgba(47, 255, 85, 0.47) 2px solid;
+}
+
+.afterRegister p {
+  font-family: 'Roboto', sans-serif;
+  font-size: 35px;
+  color: white;
 }
