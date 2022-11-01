@@ -48,7 +48,9 @@ const HeaderList = () => {
   return (
     <div className={styles.listBox}>
       <div className={styles.listBoxBorder}>
-        <p><span>Cooking</span></p>
+        <Link href={'./cooking'}>
+          <p><span>Cooking</span></p>
+        </Link>
         <Link href={'./register'}>
           <p><span>Register</span></p>
         </Link>
