@@ -54,6 +54,9 @@ const HeaderList = () => {
         <Link href={'./register'}>
           <p><span>Register</span></p>
         </Link>
+        <Link href={'./delete'}>
+          <p><span>Delete</span></p>
+        </Link>
       </div>
     </div>
   )

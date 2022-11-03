@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import Link from 'next/link'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import styles from '../styles/cooking.module.css'
@@ -14,11 +15,13 @@ const Cooking: NextPage = () => {
 
 export default Cooking
 
-const Header = () => {
+export const Header = () => {
   return (
     <header className={styles.header}>
       <div className={styles.cookAppBox}>
-        <h1 className={styles.cookApp}>Cook App</h1>
+        <Link href={"./homepage"}>
+          <h1 className={styles.cookApp}>Cook App</h1>
+        </Link>
       </div>
     </header>
   )
