@@ -1,11 +1,6 @@
 import express, { Request, Response } from "express";
-import { dbAll, dbRun } from "./DatabaseCreate"
+import { dbGet, dbAll, dbRun } from "./DatabaseCreate"
 export const cook = express.Router();
-
-// type Insert = {
-//   lastID: number
-//   changes: number
-// }
 
 cook.get("/", async (req: Request, res: Response, next) => {
   try {
@@ -13,5 +8,16 @@ cook.get("/", async (req: Request, res: Response, next) => {
     res.status(200).json(cooks);
   } catch(err) {
     console.log(err)
+  }
+});
+
+cook.get("/:id(\\d+)", async (req: Request, res: Response, next) => {
+  try {
+    const id = req.params.id;
+    const cook = await dbGet(`SELECT name FROM cookName where id = ${id}`);
+    const data = {cook: cook};
+    res.status(200).json(data);
+  } catch(err) {
+    console.log(err);
   }
 });

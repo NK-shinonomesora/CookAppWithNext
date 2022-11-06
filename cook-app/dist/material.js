@@ -41,21 +41,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.material = void 0;
 var express_1 = __importDefault(require("express"));
+var DatabaseCreate_1 = require("./DatabaseCreate");
 exports.material = express_1.default.Router();
-// type Insert = {
-//   lastID: number
-//   changes: number
-// }
-exports.material.post("/", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var materials;
+exports.material.get("/:id(\\d+)", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, materials, data, err_1;
     return __generator(this, function (_a) {
-        try {
-            materials = req.body.materials;
-            console.log(materials);
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                id = req.params.id;
+                return [4 /*yield*/, (0, DatabaseCreate_1.dbAll)("SELECT name FROM material where cookName_id = ".concat(id))];
+            case 1:
+                materials = _a.sent();
+                data = { materials: materials };
+                res.status(200).json(data);
+                return [3 /*break*/, 3];
+            case 2:
+                err_1 = _a.sent();
+                console.log(err_1);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
-        catch (err) {
-            console.log(err);
-        }
-        return [2 /*return*/];
     });
 }); });

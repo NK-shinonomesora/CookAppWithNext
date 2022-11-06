@@ -39,49 +39,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.step = void 0;
 var express_1 = __importDefault(require("express"));
-var cook_1 = require("./cook");
-var material_1 = require("./material");
-var step_1 = require("./step");
-var cook_and_material_and_step_1 = require("./cook_and_material_and_step");
-var next_1 = __importDefault(require("next"));
-var dev = process.env.NODE_ENV === "development";
-var port = 4000;
-var app = (0, next_1.default)({ dev: dev });
-var handle = app.getRequestHandler();
-(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var server, cors, bodyParser, e_1;
+var DatabaseCreate_1 = require("./DatabaseCreate");
+exports.step = express_1.default.Router();
+exports.step.get("/:id(\\d+)", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, steps, data, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, app.prepare()];
+                id = req.params.id;
+                return [4 /*yield*/, (0, DatabaseCreate_1.dbAll)("SELECT name FROM step where cookName_id = ".concat(id))];
             case 1:
-                _a.sent();
-                server = (0, express_1.default)();
-                cors = require('cors');
-                server.use(cors());
-                bodyParser = require('body-parser');
-                server.use(bodyParser.urlencoded({
-                    extended: true
-                }));
-                server.use(bodyParser.json());
-                server.use("/cook", cook_1.cook);
-                server.use("/material", material_1.material);
-                server.use("/step", step_1.step);
-                server.use("/cook_and_material_and_step", cook_and_material_and_step_1.cook_and_material_and_step);
-                server.all("*", function (req, res) {
-                    return handle(req, res);
-                });
-                server.listen(port, function () {
-                    console.log("".concat(port, "\u3067\u8D77\u52D5\u4E2D"));
-                });
+                steps = _a.sent();
+                data = { steps: steps };
+                res.status(200).json(data);
                 return [3 /*break*/, 3];
             case 2:
-                e_1 = _a.sent();
-                console.error(e_1);
+                err_1 = _a.sent();
+                console.log(err_1);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
     });
-}); })();
+}); });

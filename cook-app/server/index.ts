@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { cook } from "./cook";
 import { material } from "./material";
+import { step } from "./step";
 import { cook_and_material_and_step } from "./cook_and_material_and_step"
 import next from "next";
 
@@ -25,6 +26,7 @@ const handle = app.getRequestHandler();
 
     server.use("/cook", cook);
     server.use("/material", material);
+    server.use("/step", step);
     server.use("/cook_and_material_and_step", cook_and_material_and_step)
 
     server.all("*", (req: Request, res: Response) => {

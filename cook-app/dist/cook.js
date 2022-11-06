@@ -43,10 +43,6 @@ exports.cook = void 0;
 var express_1 = __importDefault(require("express"));
 var DatabaseCreate_1 = require("./DatabaseCreate");
 exports.cook = express_1.default.Router();
-// type Insert = {
-//   lastID: number
-//   changes: number
-// }
 exports.cook.get("/", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var cooks, err_1;
     return __generator(this, function (_a) {
@@ -61,6 +57,27 @@ exports.cook.get("/", function (req, res, next) { return __awaiter(void 0, void 
             case 2:
                 err_1 = _a.sent();
                 console.log(err_1);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
+exports.cook.get("/:id(\\d+)", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, cook_1, data, err_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                id = req.params.id;
+                return [4 /*yield*/, (0, DatabaseCreate_1.dbGet)("SELECT name FROM cookName where id = ".concat(id))];
+            case 1:
+                cook_1 = _a.sent();
+                data = { cook: cook_1 };
+                res.status(200).json(data);
+                return [3 /*break*/, 3];
+            case 2:
+                err_2 = _a.sent();
+                console.log(err_2);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }

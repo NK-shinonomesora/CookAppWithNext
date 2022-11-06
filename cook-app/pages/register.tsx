@@ -5,6 +5,7 @@ import { Fragment, useState, createContext, useContext, useEffect } from 'react'
 import { AiOutlinePlus } from 'react-icons/ai'
 
 interface RegisterStateProp {
+  updateId: number
   cookName: string
   setCookName: (str: string) => void
   limitOfMaterialNum: number
@@ -21,8 +22,10 @@ interface RegisterStateProp {
   SetInputtedMaterial: (idx: number, value: string) => void
   SetInputtedStep: (idx: number, value: string) => void
   IncreaseStep: () => void
-  GetAllCooks: () => void
-  CreateMaterials: () => void
+  GetCookName: () => void
+  GetMaterials: () => void
+  GetSteps: () => void
+  CreateCooks: () => void
   SetInputtedCookName: (value: string) => void
   whichPage: boolean
   setWhichPage: (flag: boolean) => void
@@ -31,6 +34,8 @@ interface RegisterStateProp {
 const RegisterContext = createContext<RegisterStateProp | null>(null);
 
 export const RegisterProp = () => {
+  const router = useRouter();
+  const updateId = isNaN(Number(router.query.id)) ? 0 : Number(router.query.id);
   const [cookName, setCookName] = useState<string>("");
   const limitOfMaterialNum = 10;
   const [materialInputNum, setMaterialInputNum] = useState<number>(1);
@@ -49,25 +54,51 @@ export const RegisterProp = () => {
   }
 
   const SetInputtedMaterial = (idx: number, value: string) => {
-    materials[idx] = value;
-    setMaterials(materials);
+    setMaterials(
+      materials.map((m: string, i: number) => idx === i ? value : m)
+    );
   }
 
   const SetInputtedStep = (idx: number, value: string) => {
-    steps[idx] = value;
-    setSteps(steps);
+    setSteps(
+      steps.map((s: string, i: number) => idx === i ? value : s)
+    );
   }
 
   const IncreaseStep = () => {
     setStepInputNum((stepInputNum) => stepInputNum + 1);
   }
 
-  const GetAllCooks = async () => {
-    const res = await fetch('http://127.0.0.1:4000/cook');
-    const cooks = await res.json();
-    console.log(cooks[0]);
+  const GetCookName = async () => {
+    const res = await fetch(`http://127.0.0.1:4000/cook/${updateId}`);
+    const data = await res.json();
+    setCookName(data.cook.name);
   }
 
+  const GetMaterials = async () => {
+    const res = await fetch(`http://127.0.0.1:4000/material/${updateId}`);
+    const data = await res.json();
+    const inputNum = data.materials.length;
+    setMaterialInputNum(inputNum);
+    let newMaterials: string[] = Array(limitOfMaterialNum).fill("");
+    for(let i = 0; i < inputNum; i++) {
+      newMaterials[i] = data.materials[i].name;
+    }
+    setMaterials(newMaterials);
+  }
+
+  const GetSteps = async () => {
+    const res = await fetch(`http://127.0.0.1:4000/step/${updateId}`);
+    const data = await res.json();
+    const inputNum = data.steps.length;
+    setStepInputNum(inputNum);
+    let newSteps: string[] = Array(limitOfStepNum).fill("");
+    for(let i = 0; i < inputNum; i++) {
+      newSteps[i] = data.steps[i].name;
+    }
+    setSteps(newSteps);
+  }
+ 
   const CheckInputState = (): boolean => {
     if(cookName === "") return false;
     if(materials.every(value => value === "")) return false;
@@ -75,7 +106,7 @@ export const RegisterProp = () => {
     return true;
   }
 
-  const CreateMaterials = async () => {
+  const CreateCooks = async () => {
     if(!CheckInputState()){
       const element = document.getElementById("errorMessage");
       if(element) {
@@ -84,12 +115,13 @@ export const RegisterProp = () => {
       return;
     }
     try {
-      const res = await fetch('http://127.0.0.1:4000/cook_and_material_and_step', {
-        method: 'POST',
+      const method = updateId > 0 ? "PUT" : "POST"
+      const res = await fetch(`http://127.0.0.1:4000/cook_and_material_and_step/${updateId}`, {
+        method: `${method}`,
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ cookName: cookName, materials: materials, steps: steps })
+        body: JSON.stringify({ cookName: cookName, materials: materials, steps: steps, id: updateId })
         })
       if(res.ok) {
         setWhichPage((whichPage) => !whichPage);
@@ -102,6 +134,7 @@ export const RegisterProp = () => {
   }
 
   return {
+    updateId: updateId,
     cookName: cookName,
     setCookName: setCookName,
     limitOfMaterialNum: limitOfMaterialNum,
@@ -118,8 +151,10 @@ export const RegisterProp = () => {
     SetInputtedMaterial: SetInputtedMaterial,
     SetInputtedStep: SetInputtedStep,
     IncreaseStep: IncreaseStep,
-    GetAllCooks: GetAllCooks,
-    CreateMaterials: CreateMaterials,
+    GetCookName: GetCookName,
+    GetMaterials: GetMaterials,
+    GetSteps: GetSteps,
+    CreateCooks: CreateCooks,
     SetInputtedCookName: SetInputtedCookName,
     whichPage: whichPage,
     setWhichPage: setWhichPage
@@ -128,7 +163,7 @@ export const RegisterProp = () => {
 
 const Register: NextPage = () => {
   const registerState = RegisterProp();
-  const { whichPage } = registerState;
+  const { whichPage, materials } = registerState;
 
   return (
     <>
@@ -156,10 +191,14 @@ export default Register
 
 
 const Header = () => {
+  const registerState = RegisterProp();
+  const { updateId } = registerState;
+  const title = updateId > 0 ? "Update" : "Register"
+
   return (
     <>
     <header className={styles.header}>
-      <h2 >Register materials and steps</h2>
+      <h2 >{`${title} cook name, materials and steps`}</h2>
     </header>
     </>
   )
@@ -168,7 +207,11 @@ const Header = () => {
 export const CookName = () => {
   const registerContext = useContext(RegisterContext);
   if(!registerContext) return null;
-  const { SetInputtedCookName } = registerContext;
+  const { updateId, cookName, SetInputtedCookName, GetCookName } = registerContext;
+
+  useEffect(() => {
+    if(updateId > 0) GetCookName();
+  }, []);
 
   return (
     <>
@@ -182,7 +225,8 @@ export const CookName = () => {
               <input
                 onChange={(e) => SetInputtedCookName(e.target.value)}
                 className={styles.materialInput} 
-                type="text">
+                type="text"
+                value={cookName}>
               </input>
             </div>
         </div>
@@ -195,7 +239,11 @@ export const CookName = () => {
 export const Material = () => {
   const registerContext = useContext(RegisterContext);
   if(!registerContext) return null;
-  const { limitOfMaterialNum, materialInputNum, SetInputtedMaterial, IncreaseMaterial } = registerContext;
+  const { updateId, limitOfMaterialNum, materialInputNum, SetInputtedMaterial, IncreaseMaterial, GetMaterials, materials } = registerContext;
+
+  useEffect(() => {
+    if(updateId > 0) GetMaterials();
+  }, []);
 
   return (
     <div className={styles.flex}>
@@ -211,7 +259,8 @@ export const Material = () => {
               <input
                 onChange={(e) => SetInputtedMaterial(i, e.target.value)}
                 className={styles.materialInput} 
-                type="text">
+                type="text"
+                value={materials[i]}>
               </input>
               {
                 // +記号は最下部のみに表示する
@@ -237,7 +286,11 @@ export const Material = () => {
 export const Step = () => {
   const registerContext = useContext(RegisterContext);
   if(!registerContext) return null;
-  const { limitOfStepNum, stepInputNum, SetInputtedStep, IncreaseStep, CreateMaterials } = registerContext!;
+  const { updateId, limitOfStepNum, stepInputNum, SetInputtedStep, IncreaseStep, CreateCooks, steps, GetSteps } = registerContext!;
+
+  useEffect(() => {
+    if(updateId > 0) GetSteps();
+  }, []);
 
   return (
     <div className={styles.flex}>
@@ -253,7 +306,8 @@ export const Step = () => {
               <input
                 onChange={(e) => SetInputtedStep(i, e.target.value)}
                 className={styles.materialInput} 
-                type="text">
+                type="text"
+                value={steps[i]}>
               </input>
               {
                 // +記号は最下部のみに表示する
@@ -274,7 +328,7 @@ export const Step = () => {
       </div>
       <div className={styles.wrap}>
         <div className={styles.toStepBox}>
-          <h4 onClick={() => CreateMaterials()}>Register</h4>
+          <h4 onClick={() => CreateCooks()}>{updateId > 0 ? "Update" : "Register"}</h4>
         </div>
       </div>
     </div>
