@@ -50,30 +50,9 @@ var cors_1 = __importDefault(require("cors"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var dev = process.env.NODE_ENV === "development";
 var port = 4000;
-//----------------------------------------
-// 下記に存在する"await app.prepare()"がある状態で、"register.spec.tsx"にて
-// supertestからインポートしたrequestに当ファイルからエクスポートした変数を割り当てると
-// seg fault 11が発生する。それを解消するため"conf: require('../next.config')"を以下のURLを参考にして追加。
-// https://github.com/vercel/next.js/issues/33008
-// ---------------------------------------
-var app = (0, next_1.default)({ dev: dev, conf: require('../next.config'), });
+var app = (0, next_1.default)({ dev: dev });
 var handle = app.getRequestHandler();
 exports.server = (0, express_1.default)();
-//---------------------------
-// 以下のミドルウェアを"await app.prepare()"の次に記述するとsupertestのrequestが失敗するため、こちらに移動。
-exports.server.use((0, cors_1.default)());
-exports.server.use(body_parser_1.default.urlencoded({
-    extended: true
-}));
-exports.server.use(body_parser_1.default.json());
-exports.server.use("/cook", cook_1.cook);
-exports.server.use("/material", material_1.material);
-exports.server.use("/step", step_1.step);
-exports.server.use("/cook_and_material_and_step", cook_and_material_and_step_1.cook_and_material_and_step);
-exports.server.all("*", function (req, res) {
-    return handle(req, res);
-});
-// --------------------------
 (function () { return __awaiter(void 0, void 0, void 0, function () {
     var e_1;
     return __generator(this, function (_a) {
@@ -83,6 +62,18 @@ exports.server.all("*", function (req, res) {
                 return [4 /*yield*/, app.prepare()];
             case 1:
                 _a.sent();
+                exports.server.use((0, cors_1.default)());
+                exports.server.use(body_parser_1.default.urlencoded({
+                    extended: true
+                }));
+                exports.server.use(body_parser_1.default.json());
+                exports.server.use("/cook", cook_1.cook);
+                exports.server.use("/material", material_1.material);
+                exports.server.use("/step", step_1.step);
+                exports.server.use("/cook_and_material_and_step", cook_and_material_and_step_1.cook_and_material_and_step);
+                exports.server.all("*", function (req, res) {
+                    return handle(req, res);
+                });
                 exports.server.listen(port, function () {
                     console.log("".concat(port, "\u3067\u8D77\u52D5\u4E2D"));
                 });

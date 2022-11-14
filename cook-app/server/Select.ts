@@ -1,5 +1,11 @@
 import { dbAll } from "./DatabaseCreate"
 
-dbAll('SELECT * FROM cookname').then((result) => console.log(result));
-dbAll('SELECT * FROM material').then((result) => console.log(result));
-dbAll('SELECT * FROM step').then((result) => console.log(result));
+(async () => {
+  const cook = await dbAll('SELECT * FROM cookname');
+  console.log(cook);
+  const material = await dbAll('SELECT * FROM material');
+  console.log(material);
+  const step = await dbAll('SELECT * FROM step');
+  console.log(step);
+})();
+

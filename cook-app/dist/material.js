@@ -39,10 +39,53 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.material = void 0;
+exports.MaterialFunc = exports.material = void 0;
 var express_1 = __importDefault(require("express"));
 var DatabaseCreate_1 = require("./DatabaseCreate");
 exports.material = express_1.default.Router();
+exports.MaterialFunc = {
+    GetAllMaterials: function () { return __awaiter(void 0, void 0, void 0, function () {
+        var materials;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, DatabaseCreate_1.dbAll)("SELECT * FROM material")];
+                case 1:
+                    materials = _a.sent();
+                    return [2 /*return*/, materials];
+            }
+        });
+    }); },
+    InsertMaterials: function (id, materials) { return __awaiter(void 0, void 0, void 0, function () {
+        var i;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    i = 0;
+                    _a.label = 1;
+                case 1:
+                    if (!(i < materials.length)) return [3 /*break*/, 4];
+                    return [4 /*yield*/, (0, DatabaseCreate_1.dbRun)("INSERT INTO material (name, cookName_id) VALUES (\"".concat(materials[i], "\", ").concat(id, ")"))];
+                case 2:
+                    _a.sent();
+                    _a.label = 3;
+                case 3:
+                    i++;
+                    return [3 /*break*/, 1];
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); },
+    DeleteMaterial: function (id) { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, DatabaseCreate_1.dbRun)("delete from material where cookName_id = ".concat(id))];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); }
+};
 exports.material.get("/:id(\\d+)", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var id, materials, data, err_1;
     return __generator(this, function (_a) {

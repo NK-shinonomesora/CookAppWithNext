@@ -39,10 +39,53 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.step = void 0;
+exports.StepFunc = exports.step = void 0;
 var express_1 = __importDefault(require("express"));
 var DatabaseCreate_1 = require("./DatabaseCreate");
 exports.step = express_1.default.Router();
+exports.StepFunc = {
+    GetAllSteps: function () { return __awaiter(void 0, void 0, void 0, function () {
+        var steps;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, DatabaseCreate_1.dbAll)("SELECT * FROM step")];
+                case 1:
+                    steps = _a.sent();
+                    return [2 /*return*/, steps];
+            }
+        });
+    }); },
+    InsertSteps: function (id, steps) { return __awaiter(void 0, void 0, void 0, function () {
+        var i;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    i = 0;
+                    _a.label = 1;
+                case 1:
+                    if (!(i < steps.length)) return [3 /*break*/, 4];
+                    return [4 /*yield*/, (0, DatabaseCreate_1.dbRun)("INSERT INTO step (name, cookName_id) VALUES (\"".concat(steps[i], "\", ").concat(id, ")"))];
+                case 2:
+                    _a.sent();
+                    _a.label = 3;
+                case 3:
+                    i++;
+                    return [3 /*break*/, 1];
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); },
+    DeleteStep: function (id) { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, DatabaseCreate_1.dbRun)("delete from step where cookName_id = ".concat(id))];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); }
+};
 exports.step.get("/:id(\\d+)", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var id, steps, data, err_1;
     return __generator(this, function (_a) {

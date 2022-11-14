@@ -39,151 +39,176 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cook_and_material_and_step = void 0;
+exports.AllUpdate = exports.AllDelete = exports.AllCreate = exports.cook_and_material_and_step = void 0;
 var express_1 = __importDefault(require("express"));
 var DatabaseCreate_1 = require("./DatabaseCreate");
+var cook_1 = require("./cook");
+var material_1 = require("./material");
+var step_1 = require("./step");
 exports.cook_and_material_and_step = express_1.default.Router();
 var AllCreate = function (cookName, materials, steps) { return __awaiter(void 0, void 0, void 0, function () {
-    var result, i, i, err_1, errObj;
+    var registeredMaterials, registeredSteps, result, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 10, , 11]);
-                (0, DatabaseCreate_1.dbRun)('BEGIN TRANSACTION');
-                return [4 /*yield*/, (0, DatabaseCreate_1.dbRun)("INSERT INTO cookName (name) VALUES (\"".concat(cookName, "\")"))];
+                _a.trys.push([0, 6, , 7]);
+                registeredMaterials = materials.filter(function (m) { return m !== ""; });
+                registeredSteps = steps.filter(function (s) { return s !== ""; });
+                return [4 /*yield*/, (0, DatabaseCreate_1.dbRun)('BEGIN TRANSACTION')];
             case 1:
-                result = _a.sent();
-                i = 0;
-                _a.label = 2;
+                _a.sent();
+                return [4 /*yield*/, cook_1.CookFunc.InsertCook(cookName)];
             case 2:
-                if (!(i < materials.length)) return [3 /*break*/, 5];
-                return [4 /*yield*/, (0, DatabaseCreate_1.dbRun)("INSERT INTO material (name, cookName_id) VALUES (\"".concat(materials[i], "\", ").concat(result.lastID, ")"))];
+                result = _a.sent();
+                return [4 /*yield*/, material_1.MaterialFunc.InsertMaterials(result.lastID, registeredMaterials)];
             case 3:
                 _a.sent();
-                _a.label = 4;
+                return [4 /*yield*/, step_1.StepFunc.InsertSteps(result.lastID, registeredSteps)];
             case 4:
-                i++;
-                return [3 /*break*/, 2];
+                _a.sent();
+                return [4 /*yield*/, (0, DatabaseCreate_1.dbRun)('COMMIT TRANSACTION')];
             case 5:
-                i = 0;
-                _a.label = 6;
+                _a.sent();
+                return [2 /*return*/, result];
             case 6:
-                if (!(i < steps.length)) return [3 /*break*/, 9];
-                return [4 /*yield*/, (0, DatabaseCreate_1.dbRun)("INSERT INTO step (name, cookName_id) VALUES (\"".concat(steps[i], "\", ").concat(result.lastID, ")"))];
+                err_1 = _a.sent();
+                console.log(err_1);
+                return [2 /*return*/, (0, DatabaseCreate_1.dbRun)('ROLLBACK TRANSACTION')];
+            case 7: return [2 /*return*/];
+        }
+    });
+}); };
+exports.AllCreate = AllCreate;
+var AllDelete = function (id) { return __awaiter(void 0, void 0, void 0, function () {
+    var err_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 5, , 6]);
+                return [4 /*yield*/, (0, DatabaseCreate_1.dbRun)('BEGIN TRANSACTION')];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, cook_1.CookFunc.DeleteCook(id)];
+            case 2:
+                _a.sent();
+                return [4 /*yield*/, material_1.MaterialFunc.DeleteMaterial(id)];
+            case 3:
+                _a.sent();
+                return [4 /*yield*/, step_1.StepFunc.DeleteStep(id)];
+            case 4:
+                _a.sent();
+                return [2 /*return*/, (0, DatabaseCreate_1.dbRun)('COMMIT TRANSACTION')];
+            case 5:
+                err_2 = _a.sent();
+                console.log(err_2);
+                return [2 /*return*/, (0, DatabaseCreate_1.dbRun)('ROLLBACK TRANSACTION')];
+            case 6: return [2 /*return*/];
+        }
+    });
+}); };
+exports.AllDelete = AllDelete;
+var AllUpdate = function (id, cookName, materials, steps) { return __awaiter(void 0, void 0, void 0, function () {
+    var registeredMaterials, registeredSteps, result, err_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 9, , 10]);
+                return [4 /*yield*/, (0, DatabaseCreate_1.dbRun)('BEGIN TRANSACTION')];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, step_1.StepFunc.DeleteStep(id)];
+            case 2:
+                _a.sent();
+                return [4 /*yield*/, material_1.MaterialFunc.DeleteMaterial(id)];
+            case 3:
+                _a.sent();
+                return [4 /*yield*/, cook_1.CookFunc.DeleteCook(id)];
+            case 4:
+                _a.sent();
+                registeredMaterials = materials.filter(function (m) { return m !== ""; });
+                registeredSteps = steps.filter(function (s) { return s !== ""; });
+                return [4 /*yield*/, cook_1.CookFunc.InsertCook(cookName)];
+            case 5:
+                result = _a.sent();
+                return [4 /*yield*/, material_1.MaterialFunc.InsertMaterials(result.lastID, registeredMaterials)];
+            case 6:
+                _a.sent();
+                return [4 /*yield*/, step_1.StepFunc.InsertSteps(result.lastID, registeredSteps)];
             case 7:
                 _a.sent();
-                _a.label = 8;
+                return [4 /*yield*/, (0, DatabaseCreate_1.dbRun)('COMMIT TRANSACTION')];
             case 8:
-                i++;
-                return [3 /*break*/, 6];
+                _a.sent();
+                return [2 /*return*/, result];
             case 9:
-                (0, DatabaseCreate_1.dbRun)('COMMIT');
-                return [2 /*return*/, Promise.resolve(result)];
-            case 10:
-                err_1 = _a.sent();
-                errObj = new Error("Error occures in All Create function");
-                return [2 /*return*/, Promise.reject(errObj)];
-            case 11: return [2 /*return*/];
+                err_3 = _a.sent();
+                console.log(err_3);
+                return [2 /*return*/, (0, DatabaseCreate_1.dbRun)('ROLLBACK TRANSACTION')];
+            case 10: return [2 /*return*/];
         }
     });
 }); };
-var AllDelete = function (id) { return __awaiter(void 0, void 0, void 0, function () {
-    var err_2, errObj;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 4, , 5]);
-                (0, DatabaseCreate_1.dbRun)('BEGIN TRANSACTION');
-                return [4 /*yield*/, (0, DatabaseCreate_1.dbRun)("delete from step where cookName_id = ".concat(id))];
-            case 1:
-                _a.sent();
-                return [4 /*yield*/, (0, DatabaseCreate_1.dbRun)("delete from material where cookName_id = ".concat(id))];
-            case 2:
-                _a.sent();
-                return [4 /*yield*/, (0, DatabaseCreate_1.dbRun)("delete from cookName where id = ".concat(id))];
-            case 3:
-                _a.sent();
-                (0, DatabaseCreate_1.dbRun)('COMMIT');
-                Promise.resolve();
-                return [3 /*break*/, 5];
-            case 4:
-                err_2 = _a.sent();
-                errObj = new Error("Error occures in All Delete function");
-                Promise.reject(errObj);
-                return [3 /*break*/, 5];
-            case 5: return [2 /*return*/];
-        }
-    });
-}); };
+exports.AllUpdate = AllUpdate;
 exports.cook_and_material_and_step.post("/:id(\\d+)", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, cookName, materials, steps, registeredMaterials, registeredSteps, result, lastID, err_3;
+    var _a, cookName, materials, steps, result, lastID, err_4;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 _b.trys.push([0, 2, , 3]);
                 _a = req.body, cookName = _a.cookName, materials = _a.materials, steps = _a.steps;
-                registeredMaterials = materials.filter(function (m) { return m !== ""; });
-                registeredSteps = steps.filter(function (s) { return s !== ""; });
-                return [4 /*yield*/, AllCreate(cookName, registeredMaterials, registeredSteps)];
+                return [4 /*yield*/, (0, exports.AllCreate)(cookName, materials, steps)];
             case 1:
                 result = _b.sent();
                 lastID = { lastID: result.lastID };
                 res.status(200).json(lastID);
                 return [3 /*break*/, 3];
             case 2:
-                err_3 = _b.sent();
-                res.status(500).json(err_3);
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
-        }
-    });
-}); });
-exports.cook_and_material_and_step.delete("/:id(\\d+)", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, err_4;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                id = req.params.id;
-                return [4 /*yield*/, AllDelete(id)];
-            case 1:
-                _a.sent();
-                res.status(200).json({ id: id });
-                return [3 /*break*/, 3];
-            case 2:
-                err_4 = _a.sent();
+                err_4 = _b.sent();
                 res.status(500).json(err_4);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
         }
     });
 }); });
+exports.cook_and_material_and_step.delete("/:id(\\d+)", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, err_5;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                id = Number(req.params.id);
+                return [4 /*yield*/, (0, exports.AllDelete)(id)];
+            case 1:
+                _a.sent();
+                res.status(200).json({ id: id });
+                return [3 /*break*/, 3];
+            case 2:
+                err_5 = _a.sent();
+                res.status(500).json(err_5);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
 exports.cook_and_material_and_step.put("/:id(\\d+)", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, _a, cookName, materials, steps, registeredMaterials, registeredSteps, result, lastID, err_5;
+    var id, _a, cookName, materials, steps, result, lastID, err_6;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                _b.trys.push([0, 3, , 4]);
-                (0, DatabaseCreate_1.dbRun)('BEGIN TRANSACTION');
-                id = req.params.id;
-                return [4 /*yield*/, AllDelete(id)];
-            case 1:
-                _b.sent();
+                _b.trys.push([0, 2, , 3]);
+                id = Number(req.params.id);
                 _a = req.body, cookName = _a.cookName, materials = _a.materials, steps = _a.steps;
-                registeredMaterials = materials.filter(function (m) { return m !== ""; });
-                registeredSteps = steps.filter(function (s) { return s !== ""; });
-                return [4 /*yield*/, AllCreate(cookName, registeredMaterials, registeredSteps)];
-            case 2:
+                return [4 /*yield*/, (0, exports.AllUpdate)(id, cookName, materials, steps)];
+            case 1:
                 result = _b.sent();
-                (0, DatabaseCreate_1.dbRun)('COMMIT');
                 lastID = { lastID: result.lastID };
                 res.status(200).json(lastID);
-                return [3 /*break*/, 4];
-            case 3:
-                err_5 = _b.sent();
-                res.status(500).json(err_5);
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                return [3 /*break*/, 3];
+            case 2:
+                err_6 = _b.sent();
+                res.status(500).json(err_6);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); });

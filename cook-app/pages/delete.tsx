@@ -1,34 +1,24 @@
 import type { NextPage } from 'next'
 import { Header } from './cooking'
-import { useEffect, useState } from 'react'
+import { useEffect, createContext, useContext, useState } from 'react'
 import styles from '../styles/delete.module.css'
-
-const Delete: NextPage = () => {
-  return (
-    <>
-    <Header />
-    <CookList />
-    </>
-  )
-}
-
-export default Delete
 
 interface CookProp {
   id: number
   name: string
 }
 
-const CookList = () => {
-  const [cooks, setCooks] = useState<CookProp[]>([]);
+interface DeleteStateProp {
+  cooks: CookProp[]
+  setCooks: (cooks: CookProp[]) => void
+  DeleteCook: (id: number) => void
+}
 
-  useEffect(() => {
-    (async () => {
-      const res = await fetch('http://127.0.0.1:4000/cook');
-      const cooks = await res.json();
-      setCooks(cooks);
-    })()
-  }, [])
+
+const DeleteContext = createContext<DeleteStateProp | null>(null);
+
+export const DeleteProp = () => {
+  const [cooks, setCooks] = useState<CookProp[]>([]);
 
   const DeleteCook = async (id: number) => {
     if(!confirm("Do you really want to delete it?")) return;
@@ -40,8 +30,46 @@ const CookList = () => {
     }
   }
 
+  return {
+    cooks: cooks,
+    setCooks: setCooks,
+    DeleteCook: DeleteCook
+  }
+
+}
+
+const Delete: NextPage = () => {
+  const deleteState = DeleteProp();
+  const { setCooks } = deleteState;
+
   return (
-    <CookListView cooks={ cooks } DeleteCook={ DeleteCook }/>
+    <>
+    <DeleteContext.Provider value={deleteState}>
+      <Header />
+      <CookList />
+    </DeleteContext.Provider>
+    </>
+  )
+}
+
+export default Delete
+
+
+const CookList = () => {
+  const deleteContext = useContext(DeleteContext);
+  if(!deleteContext) return null;
+  const { cooks, setCooks, DeleteCook } = deleteContext;
+
+  useEffect(() => {
+    (async () => {
+      const res = await fetch('http://127.0.0.1:4000/cook');
+      const cooks = await res.json();
+      setCooks(cooks);
+    })()
+  }, [])
+
+  return (
+    <CookListView cooks={cooks} DeleteCook={DeleteCook}/>
   )
 }
 

@@ -1,5 +1,8 @@
 import express, { Request, Response } from "express";
-import { dbGet, dbAll, dbRun } from "./DatabaseCreate"
+import { dbRun } from "./DatabaseCreate";
+import { CookFunc } from "./cook";
+import { MaterialFunc } from "./material";
+import { StepFunc } from "./step";
 export const cook_and_material_and_step = express.Router();
 
 type Insert = {
@@ -7,74 +10,86 @@ type Insert = {
   changes: number
 }
 
-const AllCreate = async (cookName: string, materials: string[], steps: string[]): Promise<Insert> => {
-  try {
-    dbRun('BEGIN TRANSACTION');
-    const result: Insert = await dbRun(`INSERT INTO cookName (name) VALUES ("${cookName}")`);
-    for(let i = 0; i < materials.length; i++) {
-      await dbRun(`INSERT INTO material (name, cookName_id) VALUES ("${materials[i]}", ${result.lastID})`);
+export const CMSFunc = {
+  AllCreate: async (cookName: string, materials: string[], steps: string[]): Promise<Insert> => {
+    try {
+      const registeredMaterials = materials.filter((m: string) => m !== "");
+      const registeredSteps = steps.filter((s: string) => s !== "");
+      await dbRun('BEGIN TRANSACTION');
+      const result: Insert = await CookFunc.InsertCook(cookName);
+      await MaterialFunc.InsertMaterials(result.lastID, registeredMaterials);
+      await StepFunc.InsertSteps(result.lastID, registeredSteps);
+      await dbRun('COMMIT TRANSACTION');
+      return result;
+    } catch(err) {
+      console.log(err);
+      return dbRun('ROLLBACK TRANSACTION');
     }
-    for(let i = 0; i < steps.length; i++) {
-      await dbRun(`INSERT INTO step (name, cookName_id) VALUES ("${steps[i]}", ${result.lastID})`);
+  },
+  AllDelete: async (id: number) => {
+    try {
+      await dbRun('BEGIN TRANSACTION');
+      await CookFunc.DeleteCook(id);
+      await MaterialFunc.DeleteMaterial(id);
+      await StepFunc.DeleteStep(id);
+      return dbRun('COMMIT TRANSACTION');
+    } catch(err) {
+      console.log(err);
+      return dbRun('ROLLBACK TRANSACTION');
     }
-    dbRun('COMMIT');
-    return Promise.resolve(result);
-  } catch(err) {
-    const errObj = new Error("Error occures in All Create function");
-    return Promise.reject(errObj);
-  }
-}
-
-const AllDelete = async (id: string) => {
-  try {
-    dbRun('BEGIN TRANSACTION');
-    await dbRun(`delete from step where cookName_id = ${id}`);
-    await dbRun(`delete from material where cookName_id = ${id}`);
-    await dbRun(`delete from cookName where id = ${id}`);
-    dbRun('COMMIT');
-    Promise.resolve();
-  } catch(err) {
-    const errObj = new Error("Error occures in All Delete function");
-    Promise.reject(errObj);
+  },
+  AllUpdate: async (id: number, cookName: string, materials: string[], steps: string[]) => {
+    try {
+      await dbRun('BEGIN TRANSACTION');
+      await StepFunc.DeleteStep(id);
+      await MaterialFunc.DeleteMaterial(id);
+      await CookFunc.DeleteCook(id);
+      const registeredMaterials = materials.filter((m: string) => m !== "");
+      const registeredSteps = steps.filter((s: string) => s !== "");
+      const result: Insert = await CookFunc.InsertCook(cookName);
+      await MaterialFunc.InsertMaterials(result.lastID, registeredMaterials);
+      await StepFunc.InsertSteps(result.lastID, registeredSteps);
+      await dbRun('COMMIT TRANSACTION');
+      return result;
+    } catch(err) {
+      console.log(err);
+      return dbRun('ROLLBACK TRANSACTION');
+    }
   }
 }
 
 cook_and_material_and_step.post("/:id(\\d+)", async (req: Request, res: Response, next) => {
   try {
     const { cookName, materials, steps } = req.body;
-    const registeredMaterials = materials.filter((m: string) => m !== "");
-    const registeredSteps = steps.filter((s: string) => s !== "");
-    const result: Insert = await AllCreate(cookName, registeredMaterials, registeredSteps);
+    const result: Insert = await CMSFunc.AllCreate(cookName, materials, steps);
     const lastID = { lastID: result.lastID }
     res.status(200).json(lastID);
   } catch(err) {
-    res.status(500).json(err);
+    res.status(500).json({ reason: "Internal Server Error in cook_and_material_and_steo.post(/:id)" });
+    console.log(err);
   }
 });
 
 cook_and_material_and_step.delete("/:id(\\d+)", async (req: Request, res: Response, next) => {
   try {
-    const id = req.params.id;
-    await AllDelete(id);
+    const id = Number(req.params.id);
+    await CMSFunc.AllDelete(id);
     res.status(200).json({ id: id });
   } catch(err) {
-    res.status(500).json(err);
+    res.status(500).json({ reason: "Internal Server Error in cook_and_material_and_steo.delete(/:id)" });
+    console.log(err);
   }
 });
 
 cook_and_material_and_step.put("/:id(\\d+)", async (req: Request, res: Response, next) => {
   try {
-    dbRun('BEGIN TRANSACTION');
-    const id = req.params.id;
-    await AllDelete(id);
+    const id = Number(req.params.id);
     const { cookName, materials, steps } = req.body;
-    const registeredMaterials = materials.filter((m: string) => m !== "");
-    const registeredSteps = steps.filter((s: string) => s !== "");
-    const result: Insert = await AllCreate(cookName, registeredMaterials, registeredSteps);
-    dbRun('COMMIT');
+    const result = await CMSFunc.AllUpdate(id, cookName, materials, steps);
     const lastID = { lastID: result.lastID }
     res.status(200).json(lastID);
   } catch(err) {
-    res.status(500).json(err);
+    res.status(500).json({ reason: "Internal Server Error in cook_and_material_and_steo.put(/:id)" });
+    console.log(err);
   }
 });

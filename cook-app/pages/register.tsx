@@ -163,7 +163,7 @@ export const RegisterProp = () => {
 
 const Register: NextPage = () => {
   const registerState = RegisterProp();
-  const { whichPage, materials } = registerState;
+  const { whichPage } = registerState;
 
   return (
     <>

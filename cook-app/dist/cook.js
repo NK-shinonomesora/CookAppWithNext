@@ -39,17 +39,51 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cook = void 0;
+exports.CookFunc = exports.cook = void 0;
 var express_1 = __importDefault(require("express"));
 var DatabaseCreate_1 = require("./DatabaseCreate");
 exports.cook = express_1.default.Router();
+exports.CookFunc = {
+    GetAllCooks: function () { return __awaiter(void 0, void 0, void 0, function () {
+        var cooks;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, DatabaseCreate_1.dbAll)('SELECT * FROM cookName')];
+                case 1:
+                    cooks = _a.sent();
+                    return [2 /*return*/, cooks];
+            }
+        });
+    }); },
+    InsertCook: function (cookName) { return __awaiter(void 0, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, DatabaseCreate_1.dbRun)("INSERT INTO cookName (name) VALUES (\"".concat(cookName, "\")"))];
+                case 1:
+                    result = _a.sent();
+                    return [2 /*return*/, result];
+            }
+        });
+    }); },
+    DeleteCook: function (id) { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, DatabaseCreate_1.dbRun)("delete from cookName where id = ".concat(id))];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    }); }
+};
 exports.cook.get("/", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var cooks, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, (0, DatabaseCreate_1.dbAll)('SELECT * FROM cookName')];
+                return [4 /*yield*/, exports.CookFunc.GetAllCooks()];
             case 1:
                 cooks = _a.sent();
                 res.status(200).json(cooks);
