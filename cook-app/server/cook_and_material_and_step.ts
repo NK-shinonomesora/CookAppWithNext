@@ -55,8 +55,29 @@ export const CMSFunc = {
       console.log(err);
       return dbRun('ROLLBACK TRANSACTION');
     }
+  },
+  AllGet: async (id: number) => {
+    try {
+      const cook = await CookFunc.GetCook(id);
+      const materials = await MaterialFunc.GetMaterialsIdentified(id);
+      const steps = await StepFunc.GetStepsIdentified(id);
+      return { cook, materials, steps }
+    } catch(err) {
+      console.log(err);
+    }
   }
 }
+
+cook_and_material_and_step.get("/:id(\\d+)", async (req: Request, res: Response, next) => {
+  try {
+    const id = Number(req.params.id);
+    const data = await CMSFunc.AllGet(id);
+    res.status(200).json(data);
+  } catch(err) {
+    res.status(500).json({ reason: "Internal Server Error in cook_and_material_and_step.get(/:id)" });
+    console.log(err);
+  }
+});
 
 cook_and_material_and_step.post("/:id(\\d+)", async (req: Request, res: Response, next) => {
   try {
@@ -65,7 +86,7 @@ cook_and_material_and_step.post("/:id(\\d+)", async (req: Request, res: Response
     const lastID = { lastID: result.lastID }
     res.status(200).json(lastID);
   } catch(err) {
-    res.status(500).json({ reason: "Internal Server Error in cook_and_material_and_steo.post(/:id)" });
+    res.status(500).json({ reason: "Internal Server Error in cook_and_material_and_step.post(/:id)" });
     console.log(err);
   }
 });
@@ -76,7 +97,7 @@ cook_and_material_and_step.delete("/:id(\\d+)", async (req: Request, res: Respon
     await CMSFunc.AllDelete(id);
     res.status(200).json({ id: id });
   } catch(err) {
-    res.status(500).json({ reason: "Internal Server Error in cook_and_material_and_steo.delete(/:id)" });
+    res.status(500).json({ reason: "Internal Server Error in cook_and_material_and_step.delete(/:id)" });
     console.log(err);
   }
 });
@@ -89,7 +110,7 @@ cook_and_material_and_step.put("/:id(\\d+)", async (req: Request, res: Response,
     const lastID = { lastID: result.lastID }
     res.status(200).json(lastID);
   } catch(err) {
-    res.status(500).json({ reason: "Internal Server Error in cook_and_material_and_steo.put(/:id)" });
+    res.status(500).json({ reason: "Internal Server Error in cook_and_material_and_step.put(/:id)" });
     console.log(err);
   }
 });

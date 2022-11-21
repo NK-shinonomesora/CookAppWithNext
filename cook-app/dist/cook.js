@@ -75,6 +75,17 @@ exports.CookFunc = {
                     return [2 /*return*/];
             }
         });
+    }); },
+    GetCook: function (id) { return __awaiter(void 0, void 0, void 0, function () {
+        var cook;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, DatabaseCreate_1.dbGet)("SELECT name FROM cookName where id = ".concat(id))];
+                case 1:
+                    cook = _a.sent();
+                    return [2 /*return*/, cook];
+            }
+        });
     }); }
 };
 exports.cook.get("/", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
@@ -90,6 +101,7 @@ exports.cook.get("/", function (req, res, next) { return __awaiter(void 0, void 
                 return [3 /*break*/, 3];
             case 2:
                 err_1 = _a.sent();
+                res.status(500).json({ reason: "Internal Server Error in cook.get(/)" });
                 console.log(err_1);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
@@ -102,8 +114,8 @@ exports.cook.get("/:id(\\d+)", function (req, res, next) { return __awaiter(void
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                id = req.params.id;
-                return [4 /*yield*/, (0, DatabaseCreate_1.dbGet)("SELECT name FROM cookName where id = ".concat(id))];
+                id = Number(req.params.id);
+                return [4 /*yield*/, exports.CookFunc.GetCook(id)];
             case 1:
                 cook_1 = _a.sent();
                 data = { cook: cook_1 };
@@ -111,6 +123,7 @@ exports.cook.get("/:id(\\d+)", function (req, res, next) { return __awaiter(void
                 return [3 /*break*/, 3];
             case 2:
                 err_2 = _a.sent();
+                res.status(500).json({ reason: "Internal Server Error in cook.get(/:id)" });
                 console.log(err_2);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];

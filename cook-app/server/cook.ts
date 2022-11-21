@@ -15,7 +15,7 @@ export const CookFunc = {
     await dbRun(`delete from cookName where id = ${id}`);
   },
   GetCook: async (id: number) => {
-    const cook = dbGet(`SELECT name FROM cookName where id = ${id}`);
+    const cook = await dbGet(`SELECT name FROM cookName where id = ${id}`);
     return cook;
   }
 }

@@ -84,6 +84,17 @@ exports.StepFunc = {
                     return [2 /*return*/];
             }
         });
+    }); },
+    GetStepsIdentified: function (id) { return __awaiter(void 0, void 0, void 0, function () {
+        var steps;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, DatabaseCreate_1.dbAll)("SELECT name FROM step where cookName_id = ".concat(id))];
+                case 1:
+                    steps = _a.sent();
+                    return [2 /*return*/, steps];
+            }
+        });
     }); }
 };
 exports.step.get("/:id(\\d+)", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
@@ -92,8 +103,8 @@ exports.step.get("/:id(\\d+)", function (req, res, next) { return __awaiter(void
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                id = req.params.id;
-                return [4 /*yield*/, (0, DatabaseCreate_1.dbAll)("SELECT name FROM step where cookName_id = ".concat(id))];
+                id = Number(req.params.id);
+                return [4 /*yield*/, exports.StepFunc.GetStepsIdentified(id)];
             case 1:
                 steps = _a.sent();
                 data = { steps: steps };
@@ -101,6 +112,7 @@ exports.step.get("/:id(\\d+)", function (req, res, next) { return __awaiter(void
                 return [3 /*break*/, 3];
             case 2:
                 err_1 = _a.sent();
+                res.status(500).json({ reason: "Internal Server Error in step.get(/material/:id)" });
                 console.log(err_1);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];

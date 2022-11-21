@@ -383,7 +383,7 @@ describe('server api', () => {
       jest.spyOn(CMSFunc, 'AllCreate').mockRejectedValue(new Error('AllCreate function fails.'));
       const res = await request(server).post('/cook_and_material_and_step/1');
       expect(res.statusCode).toBe(500);
-      expect(res.body).toEqual({ reason: "Internal Server Error in cook_and_material_and_steo.post(/:id)" });
+      expect(res.body).toEqual({ reason: "Internal Server Error in cook_and_material_and_step.post(/:id)" });
     });
   });
   describe('DELETE /cook_and_material_step/:id', () => {
@@ -397,7 +397,7 @@ describe('server api', () => {
       jest.spyOn(CMSFunc, 'AllDelete').mockRejectedValue(new Error('AllDelete function fails.'));
       const res = await request(server).delete('/cook_and_material_and_step/1');
       expect(res.statusCode).toBe(500);
-      expect(res.body).toEqual({ reason: "Internal Server Error in cook_and_material_and_steo.delete(/:id)"});
+      expect(res.body).toEqual({ reason: "Internal Server Error in cook_and_material_and_step.delete(/:id)"});
     });
   });
   describe('PUT /cook_and_material_step/:id', () => {
@@ -411,7 +411,7 @@ describe('server api', () => {
       jest.spyOn(CMSFunc, 'AllUpdate').mockRejectedValue(new Error('AllUpdate function fails.'));
       const res = await request(server).put('/cook_and_material_and_step/1');
       expect(res.statusCode).toBe(500);
-      expect(res.body).toEqual({ reason: "Internal Server Error in cook_and_material_and_steo.put(/:id)" });
+      expect(res.body).toEqual({ reason: "Internal Server Error in cook_and_material_and_step.put(/:id)" });
     });
   });
 });

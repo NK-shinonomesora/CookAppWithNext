@@ -50,3 +50,49 @@
 .cookImageBox {
   width: 30%;
 }
+
+/* これ以下は切り替え先の分 */
+.flex2 {
+  padding: 2.5% 0;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  min-width: 8%;
+  text-align: center;
+  justify-content: space-between;
+}
+
+.wrap2 {
+  position: relative;
+  margin: -15px auto;
+}
+
+.title {
+  text-align: left;
+  margin-left: 10px;
+  font-size: 30px;
+  font-family: 'Noto Sans JP', sans-serif;
+  color: darkorange;
+  border-bottom: 2px solid darkgoldenrod;
+}
+
+.contentsBox {
+  border-radius: 5px;
+  width: 650px;
+}
+
+.description {
+  font-family: 'Roboto', sans-serif;
+  text-align: left;
+  font-size: 24px;
+  margin-left: 20px;
+  margin-bottom: 20px;
+  color: deeppink;
+}
+
+.materialP {
+  text-align: left;
+  border-bottom: solid 0.3px gray;
+  font-size: 20px;
+  font-family: 'Noto Sans JP', sans-serif;
+}

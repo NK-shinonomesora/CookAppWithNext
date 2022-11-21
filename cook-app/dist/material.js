@@ -84,6 +84,17 @@ exports.MaterialFunc = {
                     return [2 /*return*/];
             }
         });
+    }); },
+    GetMaterialsIdentified: function (id) { return __awaiter(void 0, void 0, void 0, function () {
+        var materials;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, DatabaseCreate_1.dbAll)("SELECT name FROM material where cookName_id = ".concat(id))];
+                case 1:
+                    materials = _a.sent();
+                    return [2 /*return*/, materials];
+            }
+        });
     }); }
 };
 exports.material.get("/:id(\\d+)", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
@@ -92,8 +103,8 @@ exports.material.get("/:id(\\d+)", function (req, res, next) { return __awaiter(
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                id = req.params.id;
-                return [4 /*yield*/, (0, DatabaseCreate_1.dbAll)("SELECT name FROM material where cookName_id = ".concat(id))];
+                id = Number(req.params.id);
+                return [4 /*yield*/, exports.MaterialFunc.GetMaterialsIdentified(id)];
             case 1:
                 materials = _a.sent();
                 data = { materials: materials };
@@ -101,6 +112,7 @@ exports.material.get("/:id(\\d+)", function (req, res, next) { return __awaiter(
                 return [3 /*break*/, 3];
             case 2:
                 err_1 = _a.sent();
+                res.status(500).json({ reason: "Internal Server Error in material.get(/material/:id)" });
                 console.log(err_1);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
